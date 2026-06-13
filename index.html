@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#c53221">
+  <title>Bambam HotDog | Delivery e Estoque</title>
+  <link rel="icon" href="bambam-hotdog-icon.png" type="image/png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">DC</div>
+      <div><strong id="sideStoreName">DogChef</strong><small>Hot dog & delivery</small></div>
+    </div>
+    <nav class="nav" id="mainNav">
+      <button class="nav-item active" data-page="dashboard"><span>▦</span> Visão geral</button>
+      <button class="nav-item" data-page="pdv"><span>＋</span> Novo delivery</button>
+      <button class="nav-item" data-page="pedidos"><span>▤</span> Pedidos delivery</button>
+      <button class="nav-item" data-page="pontovenda"><span>◫</span> Ponto de venda</button>
+      <button class="nav-item" data-page="estoque"><span>□</span> Estoque</button>
+      <button class="nav-item" data-page="produtos"><span>◇</span> Cardápio</button>
+      <button class="nav-item" data-page="clientes"><span>◎</span> Clientes</button>
+      <button class="nav-item" data-page="entregadores"><span>➜</span> Entregadores</button>
+      <button class="nav-item" data-page="financeiro"><span>R$</span> Financeiro</button>
+      <button class="nav-item" data-page="relatorios"><span>▥</span> Relatórios</button>
+      <button class="nav-item" data-page="configuracoes"><span>⚙</span> Configurações</button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="store-status"><i></i><div><strong>Operação local</strong><small>Dados salvos neste aparelho</small></div></div>
+      <button class="sidebar-action" id="quickBackupBtn">Fazer backup</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-button menu-button" id="menuBtn" aria-label="Abrir menu">☰</button>
+      <div>
+        <p class="eyebrow" id="pageEyebrow">Operação de hoje</p>
+        <h1 id="pageTitle">Visão geral</h1>
+      </div>
+      <div class="topbar-actions">
+        <div class="clock"><strong id="clockTime">--:--</strong><small id="clockDate">--</small></div>
+        <button class="primary compact" data-open-page="pdv">＋ Novo delivery</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <section class="page active" id="page-dashboard">
+        <div class="metric-grid">
+          <article class="metric-card red"><div class="metric-icon">R$</div><div><span>Delivery hoje</span><strong id="metricRevenue">R$ 0,00</strong><small id="metricOrders">0 pedidos</small></div></article>
+          <article class="metric-card orange"><div class="metric-icon">▤</div><div><span>Em preparo</span><strong id="metricPreparing">0</strong><small>Aguardando a cozinha</small></div></article>
+          <article class="metric-card blue"><div class="metric-icon">➜</div><div><span>Em entrega</span><strong id="metricDelivery">0</strong><small>Com entregadores</small></div></article>
+          <article class="metric-card green"><div class="metric-icon">▣</div><div><span>Ticket médio</span><strong id="metricTicket">R$ 0,00</strong><small>Pedidos concluídos</small></div></article>
+          <article class="metric-card purple"><div class="metric-icon">◷</div><div><span>Pedido → saída</span><strong id="metricDispatchTime">--</strong><small>Tempo médio delivery</small></div></article>
+          <article class="metric-card"><div class="metric-icon">◫</div><div><span>Ponto de venda</span><strong id="metricPosSold">0</strong><small id="metricPosDifference">0 de diferença hoje</small></div></article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="panel orders-overview">
+            <div class="panel-head"><div><p class="eyebrow">Tempo real</p><h2>Pedidos em andamento</h2></div><button class="text-button" data-open-page="pedidos">Ver todos →</button></div>
+            <div id="dashboardOrders" class="dashboard-orders"></div>
+          </article>
+          <article class="panel stock-alerts">
+            <div class="panel-head"><div><p class="eyebrow">Atenção</p><h2>Estoque baixo</h2></div><button class="text-button" data-open-page="estoque">Gerenciar →</button></div>
+            <div id="lowStockList" class="low-stock-list"></div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid lower">
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">Últimos 7 dias</p><h2>Faturamento</h2></div><strong id="weekRevenue" class="panel-value">R$ 0,00</strong></div>
+            <div class="bar-chart" id="salesChart"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">Hoje</p><h2>Lanches por canal</h2></div></div>
+            <div id="channelSummary" class="channel-summary"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="page-pdv">
+        <div class="pdv-layout">
+          <div class="catalog-area">
+            <div class="toolbar">
+              <label class="search"><span>⌕</span><input id="productSearch" placeholder="Buscar no cardápio..."></label>
+              <div class="category-tabs" id="categoryTabs"></div>
+            </div>
+            <div class="product-grid" id="productGrid"></div>
+          </div>
+          <aside class="cart-panel">
+            <div class="cart-head"><div><p class="eyebrow">Atendimento delivery</p><h2 id="cartOrderTitle">Novo delivery</h2></div><button class="icon-button" id="clearCartBtn" title="Limpar pedido">×</button></div>
+            <div class="customer-block">
+              <label>Cliente
+                <div class="inline-field"><select id="cartCustomer"></select><button class="icon-button" id="quickCustomerBtn" title="Novo cliente">＋</button></div>
+              </label>
+              <div id="deliveryFields" class="delivery-fields">
+                <label>Bairro de entrega<select id="cartNeighborhood"></select></label>
+                <label>Endereço de entrega<textarea id="cartAddress" rows="2" placeholder="Rua, número, bairro e referência"></textarea></label>
+                <label>Taxa de entrega<input id="cartDeliveryFee" type="number" min="0" step="0.50" value="0"></label>
+              </div>
+            </div>
+            <div class="cart-items" id="cartItems"></div>
+            <div class="cart-notes"><label>Observações do pedido<textarea id="cartNotes" rows="2" placeholder="Sem cebola, ponto do molho..."></textarea></label></div>
+            <div class="cart-totals">
+              <div><span>Subtotal</span><strong id="cartSubtotal">R$ 0,00</strong></div>
+              <div><span>Entrega</span><strong id="cartFeeTotal">R$ 0,00</strong></div>
+              <div><span>Desconto</span><label class="money-input">R$ <input id="cartDiscount" type="number" min="0" step="0.50" value="0"></label></div>
+              <div class="grand-total"><span>Total</span><strong id="cartTotal">R$ 0,00</strong></div>
+            </div>
+            <label>Forma de pagamento<select id="cartPayment"><option>Dinheiro</option><option>PIX</option><option>Cartão de débito</option><option>Cartão de crédito</option><option>Pago online</option></select></label>
+            <label id="cashReceivedField">Valor recebido<input id="cashReceived" type="number" min="0" step="0.50" placeholder="R$ 0,00"></label>
+            <div class="change-line" id="changeLine" hidden>Troco: <strong id="changeValue">R$ 0,00</strong></div>
+            <button class="primary checkout" id="finishOrderBtn">Confirmar pedido <span id="checkoutTotal">R$ 0,00</span></button>
+          </aside>
+        </div>
+      </section>
+
+      <section class="page" id="page-pedidos">
+        <div class="toolbar wrap">
+          <div class="order-status-tabs" id="orderStatusTabs">
+            <button class="active" data-status="">Todos</button><button data-status="Recebido">Recebidos</button><button data-status="Em preparo">Em preparo</button><button data-status="Pronto">Prontos</button><button data-status="Saiu para entrega">Em entrega</button><button data-status="Concluído">Concluídos</button>
+          </div>
+          <label class="search small"><span>⌕</span><input id="orderSearch" inputmode="tel" placeholder="Pedido, cliente ou telefone"></label>
+        </div>
+        <div class="orders-board" id="ordersBoard"></div>
+      </section>
+
+      <section class="page" id="page-pontovenda">
+        <div class="pos-layout">
+          <form class="panel settings-form" id="posForm">
+            <div class="panel-head"><div><p class="eyebrow">Controle simplificado</p><h2>Registrar movimento do ponto de venda</h2></div></div>
+            <label>Data<input id="posDate" type="date" required></label>
+            <label>Quantidade de lanches que saiu para venda<input id="posProduced" type="number" min="0" step="1" required></label>
+            <label>Quantidade de lanches vendidos<input id="posSold" type="number" min="0" step="1" required></label>
+            <div class="pos-difference"><span>Diferença / sobra</span><strong id="posDifferencePreview">0</strong></div>
+            <label>Observação<input id="posNotes" placeholder="Ex.: evento, chuva, promoção"></label>
+            <button class="primary" type="submit">Salvar movimento</button>
+          </form>
+          <div>
+            <div class="summary-strip pos-summary">
+              <div><span>Saiu para venda hoje</span><strong id="posTodayProduced">0</strong></div>
+              <div><span>Vendido hoje</span><strong id="posTodaySold">0</strong></div>
+              <div><span>Diferença hoje</span><strong id="posTodayDifference">0</strong></div>
+            </div>
+            <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Data</th><th>Saiu</th><th>Vendido</th><th>Diferença</th><th>Aproveitamento</th><th>Observação</th><th>Ações</th></tr></thead><tbody id="posRows"></tbody></table></div></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-estoque">
+        <div class="page-actions">
+          <div class="filter-row"><label class="search"><span>⌕</span><input id="stockSearch" placeholder="Buscar ingrediente..."></label><select id="stockFilter"><option value="">Todos os itens</option><option value="low">Estoque baixo</option><option value="ok">Estoque normal</option></select></div>
+          <button class="primary" id="newStockBtn">＋ Novo item</button>
+        </div>
+        <div class="summary-strip">
+          <div><span>Itens cadastrados</span><strong id="stockCount">0</strong></div>
+          <div><span>Com estoque baixo</span><strong id="stockLowCount">0</strong></div>
+          <div><span>Valor estimado</span><strong id="stockValue">R$ 0,00</strong></div>
+        </div>
+        <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Ingrediente</th><th>Categoria</th><th>Quantidade</th><th>Mínimo</th><th>Custo unit.</th><th>Situação</th><th>Ações</th></tr></thead><tbody id="stockRows"></tbody></table></div></article>
+      </section>
+
+      <section class="page" id="page-produtos">
+        <div class="page-actions"><label class="search"><span>⌕</span><input id="manageProductSearch" placeholder="Buscar produto..."></label><button class="primary" id="newProductBtn">＋ Novo produto</button></div>
+        <div class="manage-product-grid" id="manageProductGrid"></div>
+      </section>
+
+      <section class="page" id="page-clientes">
+        <div class="page-actions">
+          <label class="search"><span>⌕</span><input id="customerSearch" inputmode="tel" placeholder="Buscar cliente ou telefone..."></label>
+          <div class="action-group"><label class="file-button">Importar WhatsApp / Contatos<input id="contactImportInput" type="file" accept=".csv,.vcf,.vcard,text/csv,text/vcard"></label><button class="primary" id="newCustomerBtn">＋ Novo cliente</button></div>
+        </div>
+        <div class="crm-grid">
+          <article class="panel crm-card"><div class="panel-head"><div><p class="eyebrow">Fidelidade</p><h2>Clientes mais frequentes</h2></div></div><div id="frequentCustomers"></div></article>
+          <article class="panel crm-card"><div class="panel-head"><div><p class="eyebrow">Faturamento</p><h2>Clientes de maior valor</h2></div></div><div id="valuableCustomers"></div></article>
+          <article class="panel crm-card"><div class="panel-head"><div><p class="eyebrow">Recorrência</p><h2>Compraram recentemente</h2></div></div><div id="recentCustomers"></div></article>
+        </div>
+        <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Telefone</th><th>Bairro / endereço</th><th>Pedidos</th><th>Total gasto</th><th>Ações</th></tr></thead><tbody id="customerRows"></tbody></table></div></article>
+      </section>
+
+      <section class="page" id="page-entregadores">
+        <div class="page-actions"><div><p class="eyebrow">Equipe de entrega</p><h2>Motoboys cadastrados</h2></div><button class="primary" id="newCourierBtn">＋ Novo entregador</button></div>
+        <div class="courier-grid" id="courierGrid"></div>
+      </section>
+
+      <section class="page" id="page-relatorios">
+        <div class="report-filters"><label>Período inicial<input id="reportStart" type="date"></label><label>Período final<input id="reportEnd" type="date"></label><button class="secondary" id="applyReportBtn">Atualizar relatório</button><button class="ghost" id="exportSalesBtn">Exportar CSV</button></div>
+        <div class="metric-grid report-metrics">
+          <article class="metric-card"><div><span>Faturamento</span><strong id="reportRevenue">R$ 0,00</strong><small>No período</small></div></article>
+          <article class="metric-card"><div><span>Pedidos</span><strong id="reportOrders">0</strong><small>Não cancelados</small></div></article>
+          <article class="metric-card"><div><span>Ticket médio</span><strong id="reportTicket">R$ 0,00</strong><small>Por pedido</small></div></article>
+          <article class="metric-card"><div><span>Taxas de entrega</span><strong id="reportFees">R$ 0,00</strong><small>Total cobrado</small></div></article>
+        </div>
+        <div class="dashboard-grid">
+          <article class="panel"><div class="panel-head"><h2>Produtos mais vendidos</h2></div><div id="topProducts"></div></article>
+          <article class="panel"><div class="panel-head"><h2>Formas de pagamento</h2></div><div id="paymentSummary"></div></article>
+        </div>
+        <article class="panel region-panel"><div class="panel-head"><div><p class="eyebrow">Mapeamento de regiões</p><h2>Pedidos e faturamento por bairro</h2></div></div><div id="neighborhoodSummary"></div></article>
+        <div class="comparison-grid">
+          <article class="panel"><div class="panel-head"><div><p class="eyebrow">Comparativo semanal</p><h2>Ponto de venda x Delivery</h2></div></div><div id="weeklyChannelComparison"></div></article>
+          <article class="panel"><div class="panel-head"><div><p class="eyebrow">Comparativo mensal</p><h2>Ponto de venda x Delivery</h2></div></div><div id="monthlyChannelComparison"></div></article>
+        </div>
+        <article class="panel region-panel"><div class="panel-head"><div><p class="eyebrow">Horários de maior movimento</p><h2>Pedidos e lanches delivery por hora</h2></div></div><div id="deliveryHourlySummary" class="hourly-chart"></div></article>
+        <article class="panel region-panel"><div class="panel-head"><div><p class="eyebrow">Desempenho das entregas</p><h2>Ranking de tempo médio por entregador</h2></div></div><div id="courierTimeRanking" class="courier-time-ranking"></div></article>
+      </section>
+
+      <section class="page" id="page-financeiro">
+        <div class="finance-toolbar">
+          <div class="report-filters finance-filters">
+            <label>Período inicial<input id="financeStart" type="date"></label>
+            <label>Período final<input id="financeEnd" type="date"></label>
+            <button class="secondary" id="applyFinanceBtn">Atualizar</button>
+          </div>
+          <div class="action-group">
+            <button class="ghost" id="newSupplierBtn">＋ Fornecedor</button>
+            <button class="primary" id="newFinanceEntryBtn">＋ Novo lançamento</button>
+          </div>
+        </div>
+        <div class="metric-grid finance-metrics">
+          <article class="metric-card green"><div><span>Receita delivery</span><strong id="financeRevenue">R$ 0,00</strong><small>Pedidos concluídos</small></div></article>
+          <article class="metric-card red"><div><span>Saídas do período</span><strong id="financeExpenses">R$ 0,00</strong><small>Custos e despesas</small></div></article>
+          <article class="metric-card purple"><div><span>Lucro líquido</span><strong id="financeNetProfit">R$ 0,00</strong><small>Receitas menos saídas</small></div></article>
+          <article class="metric-card orange"><div><span>A vencer</span><strong id="financePending">R$ 0,00</strong><small>Contas pendentes</small></div></article>
+          <article class="metric-card red"><div><span>Vencido</span><strong id="financeOverdue">R$ 0,00</strong><small>Exige atenção</small></div></article>
+          <article class="metric-card blue"><div><span>Pago no período</span><strong id="financePaid">R$ 0,00</strong><small>Saídas de caixa</small></div></article>
+        </div>
+        <div class="finance-filter-row">
+          <label class="search"><span>⌕</span><input id="financeSearch" placeholder="Descrição, fornecedor ou categoria"></label>
+          <select id="financeTypeFilter"><option value="">Todos os tipos</option><option value="Receita">Receitas</option><option value="Despesa">Despesas</option><option value="Custo">Custos</option><option value="Fornecedor">Fornecedores</option><option value="Entregador">Entregadores</option></select>
+          <select id="financeStatusFilter"><option value="">Todos os status</option><option value="Pendente">A vencer</option><option value="Vencido">Vencidos</option><option value="Pago">Pagos</option></select>
+        </div>
+        <div class="dashboard-grid finance-overview">
+          <article class="panel"><div class="panel-head"><div><p class="eyebrow">Composição</p><h2>Saídas por tipo</h2></div></div><div id="financeCategorySummary"></div></article>
+          <article class="panel"><div class="panel-head"><div><p class="eyebrow">Entregadores</p><h2>Repasses e entregas</h2></div></div><div id="courierPaymentSummary"></div></article>
+        </div>
+        <article class="panel table-panel finance-table"><div class="table-wrap"><table><thead><tr><th>Descrição</th><th>Tipo / categoria</th><th>Favorecido</th><th>Emissão</th><th>Vencimento</th><th>Pagamento</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead><tbody id="financeRows"></tbody></table></div></article>
+        <article class="panel supplier-panel"><div class="panel-head"><div><p class="eyebrow">Cadastro</p><h2>Fornecedores</h2></div></div><div id="supplierList" class="supplier-grid"></div></article>
+      </section>
+
+      <section class="page" id="page-configuracoes">
+        <div class="settings-grid">
+          <form class="panel settings-form" id="settingsForm">
+            <div class="panel-head"><div><p class="eyebrow">Identificação</p><h2>Dados da lanchonete</h2></div></div>
+            <label>Nome fantasia<input id="settingName" required></label>
+            <label>Telefone / WhatsApp<input id="settingPhone"></label>
+            <label>Endereço<textarea id="settingAddress" rows="2"></textarea></label>
+            <label>Mensagem no rodapé do recibo<textarea id="settingReceipt" rows="2"></textarea></label>
+            <label>Operador do caixa<input id="settingOperator"></label>
+            <label>Prazo delivery até saída (min)<input id="settingDeliveryDeadline" type="number" min="1" step="1" required></label>
+            <button class="primary" type="submit">Salvar configurações</button>
+          </form>
+          <article class="panel settings-form">
+            <div class="panel-head"><div><p class="eyebrow">Segurança</p><h2>Dados e backup</h2></div></div>
+            <p class="muted">Os dados ficam salvos no navegador deste computador. Faça backups periódicos para evitar perdas.</p>
+            <button class="secondary" id="exportBackupBtn">Exportar backup completo</button>
+            <label class="file-button">Importar backup<input id="importBackupInput" type="file" accept=".json,application/json"></label>
+            <button class="danger-outline" id="resetDataBtn">Restaurar dados de demonstração</button>
+          </article>
+          <article class="panel settings-form order-deletion-panel">
+            <div class="panel-head"><div><p class="eyebrow">Gerenciamento</p><h2>Excluir pedido</h2></div></div>
+            <p class="muted">Selecione um pedido específico. A exclusão será permanente e exigirá confirmação.</p>
+            <label>Pedido
+              <select id="deleteOrderSelect"></select>
+            </label>
+            <div id="deleteOrderSummary" class="delete-order-summary"></div>
+            <button class="danger-outline" id="deleteSelectedOrderBtn">Excluir pedido selecionado</button>
+          </article>
+          <article class="panel settings-form delivery-zone-panel">
+            <div class="panel-head"><div><p class="eyebrow">Logística inteligente</p><h2>Taxas de entrega por bairro</h2></div></div>
+            <form id="deliveryZoneForm" class="zone-form">
+              <input id="zoneName" placeholder="Nome do bairro" required>
+              <input id="zoneFee" type="number" min="0" step="0.50" placeholder="Taxa R$" required>
+              <button class="primary" type="submit">Adicionar</button>
+            </form>
+            <div id="deliveryZoneList" class="zone-list"></div>
+          </article>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <section class="modal" role="dialog" aria-modal="true">
+      <header><div><p class="eyebrow" id="modalEyebrow">Cadastro</p><h2 id="modalTitle">Novo item</h2></div><button class="icon-button" id="closeModalBtn">×</button></header>
+      <div id="modalBody"></div>
+    </section>
+  </div>
+
+  <div class="toast-stack" id="toastStack"></div>
+
+  <section id="receiptPrint" class="receipt-print">
+    <div class="receipt-brand"><h1 id="receiptStoreName">DOGCHEF</h1><p id="receiptStoreInfo"></p></div>
+    <div class="receipt-divider"></div>
+    <div id="receiptContent"></div>
+    <div class="receipt-divider"></div>
+    <p id="receiptFooter" class="receipt-footer"></p>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
